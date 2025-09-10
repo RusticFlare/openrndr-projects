@@ -91,7 +91,7 @@ val ormlFeatures = setOf<String>(
 
 /** ## additional OPENRNDR features to be added to this project */
 val openrndrFeatures = setOfNotNull(
-    if (DefaultNativePlatform("current").architecture.name != "arm-v8") "video" else null
+    if (DefaultNativePlatform("current").architecture.name != "arm-v8") "video" else null,
 )
 
 /** ## configure the type of logging this project uses */
@@ -122,7 +122,7 @@ dependencies {
 //    implementation(libs.jsoup)
 //    implementation(libs.csv)
 
-    /* ORSL dependencies */
+    // ORSL dependencies
 
 //    implementation(libs.orsl.shader.generator)
 //    implementation(libs.orsl.extension.color)
@@ -170,10 +170,11 @@ kotlin {
 // ------------------------------------------------------------------------------------------------------------------ //
 
 application {
-    mainClass = if (hasProperty("openrndr.application"))
+    mainClass = if (hasProperty("openrndr.application")) {
         "${property("openrndr.application")}"
-    else
+    } else {
         applicationMainClass
+    }
 }
 
 tasks {
@@ -199,10 +200,11 @@ tasks {
 tasks {
     named<org.beryx.runtime.JPackageTask>("jpackage") {
         doLast {
-            val destPath = if (OperatingSystem.current().isMacOsX)
+            val destPath = if (OperatingSystem.current().isMacOsX) {
                 "build/jpackage/openrndr-application.app/Contents/Resources/data"
-            else
+            } else {
                 "build/jpackage/openrndr-application/data"
+            }
 
             copy {
                 from("data") { include("**/*") }
@@ -279,26 +281,32 @@ class Openrndr {
         } else {
             platform
         }
-    } else when {
-        currOs.isWindows -> "windows"
-        currOs.isMacOsX -> when (currArch) {
-            "aarch64", "arm-v8" -> "macos-arm64"
-            else -> "macos"
-        }
+    } else {
+        when {
+            currOs.isWindows -> "windows"
+            currOs.isMacOsX -> when (currArch) {
+                "aarch64", "arm-v8" -> "macos-arm64"
+                else -> "macos"
+            }
 
-        currOs.isLinux -> when (currArch) {
-            "x86-64" -> "linux-x64"
-            "aarch64" -> "linux-arm64"
-            else -> throw IllegalArgumentException("architecture not supported: $currArch")
-        }
+            currOs.isLinux -> when (currArch) {
+                "x86-64" -> "linux-x64"
+                "aarch64" -> "linux-arm64"
+                else -> throw IllegalArgumentException("architecture not supported: $currArch")
+            }
 
-        else -> throw IllegalArgumentException("os not supported: ${currOs.name}")
+            else -> throw IllegalArgumentException("os not supported: ${currOs.name}")
+        }
     }
 
     fun orx(module: String) = "org.openrndr.extra:$module:$orxVersion"
+
     fun orml(module: String) = "org.openrndr.orml:$module:$ormlVersion"
+
     fun openrndr(module: String) = "org.openrndr:openrndr-$module:$openrndrVersion"
+
     fun openrndrNatives(module: String) = "org.openrndr:openrndr-$module-natives-$os:$openrndrVersion"
+
     fun orxNatives(module: String) = "org.openrndr.extra:$module-natives-$os:$orxVersion"
 
     init {
@@ -356,7 +364,7 @@ if (properties["openrndr.tasks"] == "true") {
             "Code" to "file:*.kt||file:*.frag||file:*.vert||file:*.glsl",
             "Text" to "file:*.txt||file:*.md||file:*.xml||file:*.json",
             "Gradle" to "file[*buildSrc*]:*/||file:*gradle.*||file:*.gradle||file:*/gradle-wrapper.properties||file:*.toml",
-            "Media" to "file:*.png||file:*.jpg||file:*.dds||file:*.exr||file:*.mp3||file:*.wav||file:*.mp4||file:*.mov||file:*.svg"
+            "Media" to "file:*.png||file:*.jpg||file:*.dds||file:*.exr||file:*.mp3||file:*.wav||file:*.mp4||file:*.mov||file:*.svg",
         )
         files.forEach { (name, pattern) ->
             val file = File(scopesFolder, "__$name.xml")
@@ -366,7 +374,7 @@ if (properties["openrndr.tasks"] == "true") {
                     <component name="DependencyValidationManager">
                       <scope name=" ★ $name" pattern="$pattern" />
                     </component>
-                    """.trimIndent()
+                    """.trimIndent(),
                 )
             }
         }
