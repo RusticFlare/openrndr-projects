@@ -4,6 +4,7 @@ import org.openrndr.application
 import org.openrndr.color.ColorRGBa.Companion.BLACK
 import org.openrndr.color.ColorRGBa.Companion.PINK
 import org.openrndr.color.ColorRGBa.Companion.WHITE
+import org.openrndr.extensions.Screenshots
 
 fun main() = application {
     configure {
@@ -11,7 +12,10 @@ fun main() = application {
         height = 800
     }
     program {
+        extend(Screenshots())
+
         backgroundColor = PINK
+
         extend {
             drawer.stroke = null
 
