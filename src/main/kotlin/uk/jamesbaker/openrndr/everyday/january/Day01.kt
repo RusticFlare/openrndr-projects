@@ -15,18 +15,23 @@ import kotlin.random.Random
 
 private fun main() = application {
     configure {
-        width = 500
-        height = 500
+        width = 1000
+        height = 1000
     }
     oliveProgram {
         val design = drawComposition {}
 
         data class SineWave(
-            val freq: Double,
-            val amp: Double,
+            val frequency: Double,
+            val amplitude: Double,
         ) {
-            fun value(x: Double) = amp * sin(freq * x)
+            fun value(x: Double) = amplitude * sin(x * frequency)
         }
+
+        fun polarFromCenter(
+            theta: Double,
+            radius: Double,
+        ) = Polar(theta = theta, radius = radius).cartesian + drawer.bounds.center
 
         extend(Screenshots())
 
@@ -34,22 +39,22 @@ private fun main() = application {
 
         val radius = width / 4.0
 
-        val sineWaves = List(2) {
+        val sineWavesCount = 2
+        val sineWaves = List(sineWavesCount) {
             SineWave(
-                freq = random.nextDouble(1.0, 300.0).toInt().toDouble(),
-                amp = random.nextDouble(radius / 25, radius / 2),
+                frequency = random.nextDouble(1.0, 300.0).toInt().toDouble(),
+                amplitude = random.nextDouble(radius / 25, radius / sineWavesCount),
             )
         }
         extend {
             val circlePoints = generateSequence(0.0) { it + 0.05 }
                 .takeWhile { it < 360 }
                 .map { theta ->
-                    Polar(
+                    polarFromCenter(
                         theta = theta,
                         radius = radius + sineWaves.sumOf { it.value(Math.toRadians(theta)) },
-                    ).cartesian + drawer.bounds.center
-                }.toList() +
-                (Polar(theta = 0.0, radius = radius).cartesian + drawer.bounds.center)
+                    )
+                }.toList() + polarFromCenter(theta = 0.0, radius = radius)
 
             design.clear()
             design.draw {
