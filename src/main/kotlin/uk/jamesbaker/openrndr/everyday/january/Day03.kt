@@ -33,9 +33,9 @@ private fun main() = application {
 
         val random = Random(9988937307788)
 
-        val sineWaves = List(3) {
+        val sineWaves = List(2) {
             SineWave(
-                freq = random.nextDouble(3.0, 60.0) * 0.5,
+                freq = random.nextDouble(3.0, 60.0) * 0.61,
                 amp = random.nextDouble(50.0, 150.0),
             )
         }
@@ -43,14 +43,14 @@ private fun main() = application {
             drawer.clear(ColorRGBa.BLACK)
             drawer.stroke = ColorRGBa.WHITE
 
-            val pointsAcross = (0 until height).map { x ->
+            val pointsAcross = (0..height).map { x ->
                 Vector2(
                     x = width * 0.5 + sineWaves.sumOf { it.sin(x * 0.01) },
                     y = x.toDouble(),
                 )
             }
 
-            val pointsDown = (0 until height).map { y ->
+            val pointsDown = (0..height).map { y ->
                 Vector2(
                     x = width * 0.5 + sineWaves.sumOf { it.cos(y * 0.01) },
                     y = y.toDouble(),
