@@ -67,7 +67,7 @@ val orxFeatures = setOf(
 //  "orx-syphon",
 //  "orx-temporal-blur",
 //  "orx-tensorflow",
-//  "orx-text-writer",
+    "orx-text-writer",
 //  "orx-time-operators",
 //  "orx-timer",
 //  "orx-triangulation",
@@ -140,8 +140,14 @@ dependencies {
     implementation(libs.kotlin.logging)
 
     when (applicationLogging) {
-        Logging.NONE -> runtimeOnly(libs.slf4j.nop)
-        Logging.SIMPLE -> runtimeOnly(libs.slf4j.simple)
+        Logging.NONE -> {
+            runtimeOnly(libs.slf4j.nop)
+        }
+
+        Logging.SIMPLE -> {
+            runtimeOnly(libs.slf4j.simple)
+        }
+
         Logging.FULL -> {
             runtimeOnly(libs.log4j.slf4j2)
             runtimeOnly(libs.log4j.core)
@@ -284,6 +290,7 @@ class Openrndr {
     } else {
         when {
             currOs.isWindows -> "windows"
+
             currOs.isMacOsX -> when (currArch) {
                 "aarch64", "arm-v8" -> "macos-arm64"
                 else -> "macos"
