@@ -14,7 +14,9 @@ fun main() = application {
         height = 630
     }
     oliveProgram {
-        extend(Screenshots())
+        extend(Screenshots()) {
+            contentScale = 1.0
+        }
 
         val scale = 0.3
 
